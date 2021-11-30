@@ -161,11 +161,33 @@ public class awsTest {
     }
     public static void CreateInstance()
     {
+        //EC2 서버에 있는 AMI를 불러올 수 있어야 함
+        String ami_id = "ami-00dedb35ceec79f83";
+
+        RunInstancesRequest run_request = new RunInstancesRequest()
+                .withImageId(ami_id)
+                .withInstanceType(InstanceType.T1Micro)
+                .withMaxCount(1)
+                .withMinCount(1);
+
+        RunInstancesResult run_response = ec2.runInstances(run_request);
+
+        String reservation_id = run_response.getReservation().getInstances().get(0).getInstanceId();
 
     }
     public static void RebootInstance()
     {
+        final AmazonEC2 ec2 = AmazonEC2ClientBuilder.defaultClient();
 
+        Scanner id_string = new Scanner(System.in);
+        listInstances();
+        System.out.printf("재부팅 할 인스턴트의 id를 적어주세요  : ");
+        String instance_id = id_string.nextLine();
+
+        RebootInstancesRequest request = new RebootInstancesRequest()
+                .withInstanceIds(instance_id);
+
+        RebootInstancesResult response = ec2.rebootInstances(request);
     }
     public static void IistImage()
     {
