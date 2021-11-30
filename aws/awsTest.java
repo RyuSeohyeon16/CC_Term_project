@@ -2,10 +2,8 @@ import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.ec2.AmazonEC2;
 import com.amazonaws.services.ec2.AmazonEC2ClientBuilder;
-import com.amazonaws.services.ec2.model.DescribeInstancesRequest;
-import com.amazonaws.services.ec2.model.DescribeInstancesResult;
-import com.amazonaws.services.ec2.model.Instance;
-import com.amazonaws.services.ec2.model.Reservation;
+import com.amazonaws.services.ec2.model.*;
+import com.sun.jna.WString;
 
 import java.util.Scanner;
 public class awsTest {
@@ -65,8 +63,32 @@ public class awsTest {
                     listInstances();
                     break;
                 case 2:
-                    listInstances();
+                    AvailableZones();
                     break;
+                case 3:
+                    StartInstance();
+                    break;
+                case 4:
+                    AvailableRegions();
+                    break;
+                case 5:
+                    StopInstance();
+                    break;
+                case 6:
+                    CreateInstance();
+                    break;
+                case 7:
+                    RebootInstance();
+                    break;
+                case 8:
+                    IistImage();
+                    break;
+                case 99:
+                    System.exit(0);
+                    break;
+
+                default:
+                    System.out.printf("메뉴에 있는 번호를 정확히 입력해주십시오");
             }
 
         }
@@ -101,6 +123,49 @@ public class awsTest {
         }
     }
     public static void AvailableZones()
+    {
+
+    }
+    public static void StartInstance()
+    {
+        final AmazonEC2 ec2 = AmazonEC2ClientBuilder.defaultClient();
+
+        Scanner id_string = new Scanner(System.in);
+        System.out.printf("시작할 인스턴트를 id를 적어주세요 : ");
+        String instance_id = id_string.nextLine();
+
+        StartInstancesRequest request = new StartInstancesRequest()
+                .withInstanceIds(instance_id);
+
+        ec2.startInstances(request);
+    }
+    public static void AvailableRegions()
+    {
+
+    }
+    public static void StopInstance()
+    {
+        final AmazonEC2 ec2 = AmazonEC2ClientBuilder.defaultClient();
+
+        Scanner id_string = new Scanner(System.in);
+        System.out.printf("동작을 중지할 인스턴트의 id를 적어주세요  : ");
+        String instance_id = id_string.nextLine();
+
+        StopInstancesRequest request = new StopInstancesRequest()
+                .withInstanceIds(instance_id);
+
+        ec2.stopInstances(request);
+
+    }
+    public static void CreateInstance()
+    {
+
+    }
+    public static void RebootInstance()
+    {
+
+    }
+    public static void IistImage()
     {
 
     }
