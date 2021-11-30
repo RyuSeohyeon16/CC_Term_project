@@ -26,13 +26,13 @@ Course Web : https://sites.google.com/view/data-computing/lectures/2021-f-cloud-
 ### TODO
 - [x] 1. list instance
 
-- [ ] 2. available zones 
+- [ ] 2. available zones
 
-- [ ] 3. start instance 
+- [x] 3. start instance **- 기능 성공 / 형식수정필요**
 
 - [ ] 4. available regions
 
-- [ ] 5. stop instance 
+- [x] 5. stop instance **- 기능 성공 / 형식수정필요**
 
 - [ ] 6. create instance
 

@@ -131,6 +131,7 @@ public class awsTest {
         final AmazonEC2 ec2 = AmazonEC2ClientBuilder.defaultClient();
 
         Scanner id_string = new Scanner(System.in);
+        listInstances();
         System.out.printf("시작할 인스턴트를 id를 적어주세요 : ");
         String instance_id = id_string.nextLine();
 
@@ -148,6 +149,7 @@ public class awsTest {
         final AmazonEC2 ec2 = AmazonEC2ClientBuilder.defaultClient();
 
         Scanner id_string = new Scanner(System.in);
+        listInstances();
         System.out.printf("동작을 중지할 인스턴트의 id를 적어주세요  : ");
         String instance_id = id_string.nextLine();
 
