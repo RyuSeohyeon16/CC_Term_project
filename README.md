@@ -26,19 +26,19 @@ Course Web : https://sites.google.com/view/data-computing/lectures/2021-f-cloud-
 ### TODO
 - [x] 1. list instance
 
-- [ ] 2. available zones
+- [x] 2. available zones
 
-- [x] 3. start instance **- 기능 성공 / 형식수정필요**
+- [x] 3. start instance 
 
-- [ ] 4. available regions
+- [x] 4. available regions
 
-- [x] 5. stop instance **- 기능 성공 / 형식수정필요**
+- [x] 5. stop instance
 
-- [ ] 6. create instance
+- [x] 6. create instance
 
-- [ ] 7. reboot instance
+- [x] 7. reboot instance
 
-- [ ] 8. list images
+- [ ] 8. list images - Error when I call for image request.
 
 9. 추가 구현할 기능은 추후 추가할 예정
 
