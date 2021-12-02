@@ -3,8 +3,10 @@ import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.ec2.AmazonEC2;
 import com.amazonaws.services.ec2.AmazonEC2ClientBuilder;
 import com.amazonaws.services.ec2.model.*;
+import com.amazonaws.services.ec2.model.Image;
 import com.sun.jna.WString;
 
+import java.util.List;
 import java.util.Scanner;
 public class awsTest {
     /*
@@ -124,45 +126,71 @@ public class awsTest {
     }
     public static void AvailableZones()
     {
+        System.out.println("Available zones . . .");
+        DescribeAvailabilityZonesResult zones_response =
+                ec2.describeAvailabilityZones();
 
+        for(AvailabilityZone zone : zones_response.getAvailabilityZones()) {
+            System.out.printf(
+                    "[id] %s, " +
+                            "[region] %s, " +
+                            "[zone] %s ",
+                    zone.getZoneId(),
+                    zone.getRegionName(),
+                    zone.getZoneName());
+            System.out.println();
+        }
     }
     public static void StartInstance()
     {
         final AmazonEC2 ec2 = AmazonEC2ClientBuilder.defaultClient();
-
         Scanner id_string = new Scanner(System.in);
-        listInstances();
-        System.out.printf("시작할 인스턴트를 id를 적어주세요 : ");
+
+        System.out.printf("인스턴스 ID를 입력하시오 : ");
         String instance_id = id_string.nextLine();
 
+        System.out.println("Starting . . . " + instance_id);
         StartInstancesRequest request = new StartInstancesRequest()
                 .withInstanceIds(instance_id);
 
         ec2.startInstances(request);
+        System.out.println("Succcessfully started instance "+ request.getInstanceIds());
     }
     public static void AvailableRegions()
     {
+        System.out.println("Available Regions . . .");
+        DescribeRegionsResult regions_response = ec2.describeRegions();
 
+        for(Region region : regions_response.getRegions()) {
+            System.out.printf(
+                    "[region] %s, " +
+                            "[endpoint] %s",
+                    region.getRegionName(),
+                    region.getEndpoint());
+            System.out.println();
+        }
     }
     public static void StopInstance()
     {
         final AmazonEC2 ec2 = AmazonEC2ClientBuilder.defaultClient();
 
         Scanner id_string = new Scanner(System.in);
-        listInstances();
-        System.out.printf("동작을 중지할 인스턴트의 id를 적어주세요  : ");
+        System.out.printf("인스턴스 ID를 입력하시오 : ");
         String instance_id = id_string.nextLine();
 
         StopInstancesRequest request = new StopInstancesRequest()
                 .withInstanceIds(instance_id);
 
         ec2.stopInstances(request);
+        System.out.println("Succcessfully stop instance "+ instance_id);
 
     }
     public static void CreateInstance()
     {
-        //EC2 서버에 있는 AMI를 불러올 수 있어야 함
-        String ami_id = "ami-00dedb35ceec79f83";
+        Scanner ami_string = new Scanner(System.in);
+        //String ami_string = "ami-00dedb35ceec79f83";
+        System.out.printf("이미지 ID를 입력하시오 : ");
+        String ami_id = ami_string.nextLine();
 
         RunInstancesRequest run_request = new RunInstancesRequest()
                 .withImageId(ami_id)
@@ -173,6 +201,7 @@ public class awsTest {
         RunInstancesResult run_response = ec2.runInstances(run_request);
 
         String reservation_id = run_response.getReservation().getInstances().get(0).getInstanceId();
+        System.out.println("Successfully started EC2 instance " +reservation_id +" based on AMI " + ami_id);
 
     }
     public static void RebootInstance()
@@ -181,16 +210,32 @@ public class awsTest {
 
         Scanner id_string = new Scanner(System.in);
         listInstances();
-        System.out.printf("재부팅 할 인스턴트의 id를 적어주세요  : ");
+        System.out.printf("인스턴스 ID를 입력하시오 : ");
         String instance_id = id_string.nextLine();
+
+        System.out.println("Rebooting . . . " + instance_id);
 
         RebootInstancesRequest request = new RebootInstancesRequest()
                 .withInstanceIds(instance_id);
 
         RebootInstancesResult response = ec2.rebootInstances(request);
+        System.out.println("Succcessfully rebooted instance "+ response);
     }
     public static void IistImage()
     {
-
+        System.out.println("Listing image....");
+        DescribeImagesRequest request = new DescribeImagesRequest();
+        /* --------------여기서 DescribeImagesResult가 접근하지 못하고 있음... why...-------------*/
+        DescribeImagesResult response = ec2.describeImages(request);
+        for(Image image : response.getImages()) {
+            System.out.printf(
+                    "[ImageID] %s, " +
+                            "[Name] %s, " +
+                            "[Owner]  %s",
+                    image.getImageId(),
+                    image.getName(),
+                    image.getOwnerId());
+            System.out.println();
+        }
     }
 }
