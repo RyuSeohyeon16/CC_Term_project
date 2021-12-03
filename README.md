@@ -40,7 +40,9 @@ Course Web : https://sites.google.com/view/data-computing/lectures/2021-f-cloud-
 
 - [x] 8. list images
 
-9. 추가 구현할 기능은 추후 추가할 예정
+- [x] 9. search instance with status - 핉터링을 통해 특정 상태의 인스턴스만 검색
+
+- [ ] 10. 기능 추가 예정 
 
 - [x] 99. 종료 - O
 

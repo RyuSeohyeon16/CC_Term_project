@@ -4,10 +4,9 @@ import com.amazonaws.services.ec2.AmazonEC2;
 import com.amazonaws.services.ec2.AmazonEC2ClientBuilder;
 import com.amazonaws.services.ec2.model.*;
 import com.amazonaws.services.ec2.model.Image;
-import com.sun.jna.WString;
 
-import java.util.List;
 import java.util.Scanner;
+
 public class awsTest {
     /*
      * Cloud Computing, Data Computing Laboratory
@@ -54,6 +53,7 @@ public class awsTest {
             System.out.println("  3. start instance               4. available regions      ");
             System.out.println("  5. stop instance                6. create instance        ");
             System.out.println("  7. reboot instance              8. list images            ");
+            System.out.println("  9. search instance with status  10.            ");
             System.out.println("                                 99. quit                   ");
             System.out.println("------------------------------------------------------------");
 
@@ -84,6 +84,10 @@ public class awsTest {
                     break;
                 case 8:
                     IistImage();
+                    break;
+                /* 추가 구현 */
+                case 9:
+                    SearchInstancewithStatus();
                     break;
                 case 99:
                     System.exit(0);
@@ -234,6 +238,52 @@ public class awsTest {
                     image.getName(),
                     image.getOwnerId());
             System.out.println();
+        }
+    }
+    public static void SearchInstancewithStatus()
+    {
+        int menu = 0;
+        Scanner scan_menu = new Scanner(System.in);
+        Filter status_filter = new Filter("instance-state-name");
+
+        System.out.printf("검색하고 싶은 인스턴스의 상태를 선택해주세요 ( 1. Running   2. Stopped ) : ");
+        while(menu < 1 || menu > 2) {
+            while (!scan_menu.hasNextInt()) {
+                scan_menu.next();
+                System.err.print("숫자를 입력해 주세요.  재 선택 : ");
+            }
+            menu = scan_menu.nextInt();
+
+            switch (menu) {
+                case 1:
+                    status_filter.withValues("running");
+                    break;
+                case 2:
+                    status_filter.withValues("stopped");
+                    break;
+                default:
+                    System.err.print("올바른 입력값이 아닙니다.  재 선택 : ");
+                    break;
+            }
+        }
+
+        DescribeInstancesRequest request = new DescribeInstancesRequest().withFilters(status_filter);
+
+        DescribeInstancesResult response = ec2.describeInstances(request);
+        for (Reservation reservation : response.getReservations()) {
+            for (Instance instance : reservation.getInstances()) {
+                System.out.printf(
+                        "[id] %s, " +
+                                "[AMI] %s, " +
+                                "[type] %s, " +
+                                "[state] %s " +
+                                "[monitoring state] %s\n",
+                        instance.getInstanceId(),
+                        instance.getImageId(),
+                        instance.getInstanceType(),
+                        instance.getState().getName(),
+                        instance.getMonitoring().getState());
+            }
         }
     }
 }
