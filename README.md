@@ -38,7 +38,7 @@ Course Web : https://sites.google.com/view/data-computing/lectures/2021-f-cloud-
 
 - [x] 7. reboot instance
 
-- [ ] 8. list images - Error when I call for image request.
+- [x] 8. list images
 
 9. 추가 구현할 기능은 추후 추가할 예정
 

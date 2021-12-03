@@ -188,7 +188,6 @@ public class awsTest {
     public static void CreateInstance()
     {
         Scanner ami_string = new Scanner(System.in);
-        //String ami_string = "ami-00dedb35ceec79f83";
         System.out.printf("이미지 ID를 입력하시오 : ");
         String ami_id = ami_string.nextLine();
 
@@ -209,7 +208,6 @@ public class awsTest {
         final AmazonEC2 ec2 = AmazonEC2ClientBuilder.defaultClient();
 
         Scanner id_string = new Scanner(System.in);
-        listInstances();
         System.out.printf("인스턴스 ID를 입력하시오 : ");
         String instance_id = id_string.nextLine();
 
@@ -224,10 +222,10 @@ public class awsTest {
     public static void IistImage()
     {
         System.out.println("Listing image....");
-        DescribeImagesRequest request = new DescribeImagesRequest();
-        /* --------------여기서 DescribeImagesResult가 접근하지 못하고 있음... why...-------------*/
-        DescribeImagesResult response = ec2.describeImages(request);
-        for(Image image : response.getImages()) {
+        Filter filter = new Filter().withName("is-public").withValues("false");
+        DescribeImagesRequest request = new DescribeImagesRequest().withFilters(filter);
+        DescribeImagesResult result = ec2.describeImages(request);
+        for(Image image : result.getImages()) {
             System.out.printf(
                     "[ImageID] %s, " +
                             "[Name] %s, " +
