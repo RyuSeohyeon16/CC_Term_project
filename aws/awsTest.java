@@ -53,7 +53,7 @@ public class awsTest {
             System.out.println("  3. start instance               4. available regions      ");
             System.out.println("  5. stop instance                6. create instance        ");
             System.out.println("  7. reboot instance              8. list images            ");
-            System.out.println("  9. search instance with status  10.            ");
+            System.out.println("  9. terminate instance          10. search instance with status  ");
             System.out.println("                                 99. quit                   ");
             System.out.println("------------------------------------------------------------");
 
@@ -61,6 +61,7 @@ public class awsTest {
             number =menu.nextInt();
 
             switch (number) {
+                /* 기본 메뉴 구현 */
                 case 1:
                     listInstances();
                     break;
@@ -85,8 +86,11 @@ public class awsTest {
                 case 8:
                     IistImage();
                     break;
-                /* 추가 구현 */
+                /* 추가 메뉴 구현 */
                 case 9:
+                    TerminateInstance();
+                    break;
+                case 10:
                     SearchInstancewithStatus();
                     break;
                 case 99:
@@ -99,6 +103,9 @@ public class awsTest {
 
         }
     }
+
+    /********************** 기본 메뉴 구현 **********************/
+
     public static void listInstances()
     {
         System.out.println("Listing instances....");
@@ -147,13 +154,13 @@ public class awsTest {
     }
     public static void StartInstance()
     {
-        final AmazonEC2 ec2 = AmazonEC2ClientBuilder.defaultClient();
         Scanner id_string = new Scanner(System.in);
 
         System.out.printf("인스턴스 ID를 입력하시오 : ");
         String instance_id = id_string.nextLine();
 
-        System.out.println("Starting . . . " + instance_id);
+        System.out.println("Starting " + instance_id + " . . .");
+
         StartInstancesRequest request = new StartInstancesRequest()
                 .withInstanceIds(instance_id);
 
@@ -176,52 +183,69 @@ public class awsTest {
     }
     public static void StopInstance()
     {
-        final AmazonEC2 ec2 = AmazonEC2ClientBuilder.defaultClient();
-
         Scanner id_string = new Scanner(System.in);
         System.out.printf("인스턴스 ID를 입력하시오 : ");
         String instance_id = id_string.nextLine();
+
+        System.out.println("Stopping " + instance_id + " . . .");
 
         StopInstancesRequest request = new StopInstancesRequest()
                 .withInstanceIds(instance_id);
 
         ec2.stopInstances(request);
-        System.out.println("Succcessfully stop instance "+ instance_id);
+        System.out.println("Succcessfully stop instance "+ request.getInstanceIds());
 
     }
     public static void CreateInstance()
     {
+        Scanner name_string = new Scanner(System.in);
+        System.out.printf("생성할 인스턴스 이름을 입력하시오 : ");
+        String new_instance_name = name_string.nextLine();
+
         Scanner ami_string = new Scanner(System.in);
         System.out.printf("이미지 ID를 입력하시오 : ");
         String ami_id = ami_string.nextLine();
 
+        final AmazonEC2 ec2 = AmazonEC2ClientBuilder.defaultClient();
+
         RunInstancesRequest run_request = new RunInstancesRequest()
                 .withImageId(ami_id)
-                .withInstanceType(InstanceType.T1Micro)
+                .withInstanceType(InstanceType.T2Micro)
                 .withMaxCount(1)
                 .withMinCount(1);
 
         RunInstancesResult run_response = ec2.runInstances(run_request);
 
         String reservation_id = run_response.getReservation().getInstances().get(0).getInstanceId();
-        System.out.println("Successfully started EC2 instance " +reservation_id +" based on AMI " + ami_id);
+
+        Tag tag = new Tag()
+                .withKey("Name")
+                .withValue(new_instance_name);
+
+        CreateTagsRequest tag_request = new CreateTagsRequest()
+                .withResources(reservation_id)
+                .withTags(tag);
+
+        ec2.createTags(tag_request);
+
+        System.out.println(
+                "Successfully started EC2 instance [" +new_instance_name +"] "+ reservation_id +
+                        " based on AMI " + ami_id);
 
     }
     public static void RebootInstance()
     {
-        final AmazonEC2 ec2 = AmazonEC2ClientBuilder.defaultClient();
-
         Scanner id_string = new Scanner(System.in);
         System.out.printf("인스턴스 ID를 입력하시오 : ");
         String instance_id = id_string.nextLine();
 
-        System.out.println("Rebooting . . . " + instance_id);
+        System.out.println("Rebooting " + instance_id + " . . .");
 
         RebootInstancesRequest request = new RebootInstancesRequest()
                 .withInstanceIds(instance_id);
 
-        RebootInstancesResult response = ec2.rebootInstances(request);
-        System.out.println("Succcessfully rebooted instance "+ response);
+        ec2.rebootInstances(request);
+        System.out.println("Succcessfully rebooted instance "+ request.getInstanceIds());
     }
     public static void IistImage()
     {
@@ -240,6 +264,24 @@ public class awsTest {
             System.out.println();
         }
     }
+
+    /********************** 추가 메뉴 구현 **********************/
+
+    public static void TerminateInstance()
+    {
+        Scanner id_string = new Scanner(System.in);
+        System.out.printf("인스턴스 ID를 입력하시오 : ");
+        String instance_id = id_string.nextLine();
+
+        System.out.println("Terminating " + instance_id + " . . .");
+
+        TerminateInstancesRequest request = new TerminateInstancesRequest()
+                .withInstanceIds(instance_id);
+
+        ec2.terminateInstances(request);
+        System.out.println("Succcessfully Terminated instance "+ request.getInstanceIds());
+    }
+
     public static void SearchInstancewithStatus()
     {
         int menu = 0;
@@ -286,4 +328,5 @@ public class awsTest {
             }
         }
     }
+
 }
