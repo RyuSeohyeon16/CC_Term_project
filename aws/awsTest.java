@@ -14,6 +14,9 @@ public class awsTest {
      * Chungbuk National University
      */
     static AmazonEC2 ec2;
+    public static final String ANSI_CYAN = "\u001B[36m";
+    public static final String ANSI_RESET = "\u001B[0m";
+
     private static void init() throws Exception {
         /*
          * The ProfileCredentialsProvider will return your [default]
@@ -54,7 +57,8 @@ public class awsTest {
             System.out.println("  5. stop instance                6. create instance        ");
             System.out.println("  7. reboot instance              8. list images            ");
             System.out.println("  9. terminate instance          10. search instance with status  ");
-            System.out.println("                                 99. quit                   ");
+            System.out.println(" 11. start all instance          12. stop all instance  ");
+            System.out.println(ANSI_CYAN +"\n                                 99. quit " + ANSI_RESET);
             System.out.println("------------------------------------------------------------");
 
             System.out.print("Enter an integer: ");
@@ -93,6 +97,12 @@ public class awsTest {
                 case 10:
                     SearchInstancewithStatus();
                     break;
+                case 11:
+                    StartAllInstance();
+                    break;
+                case 12:
+                    StopAllInstance();
+                    break;
                 case 99:
                     System.exit(0);
                     break;
@@ -106,6 +116,7 @@ public class awsTest {
 
     /********************** 기본 메뉴 구현 **********************/
 
+    /* 메뉴 1 : 인스턴스 목록 출력 */
     public static void listInstances()
     {
         System.out.println("Listing instances....");
@@ -135,6 +146,8 @@ public class awsTest {
             }
         }
     }
+
+    /* 메뉴 2 : Available zone 목록 출력 */
     public static void AvailableZones()
     {
         System.out.println("Available zones . . .");
@@ -152,6 +165,8 @@ public class awsTest {
             System.out.println();
         }
     }
+
+    /* 메뉴 3 : 특정 인스턴스를 시작하기 */
     public static void StartInstance()
     {
         Scanner id_string = new Scanner(System.in);
@@ -167,6 +182,8 @@ public class awsTest {
         ec2.startInstances(request);
         System.out.println("Succcessfully started instance "+ request.getInstanceIds());
     }
+
+    /* 메뉴 4 : Available region 목록 출력 */
     public static void AvailableRegions()
     {
         System.out.println("Available Regions . . .");
@@ -181,6 +198,8 @@ public class awsTest {
             System.out.println();
         }
     }
+
+    /* 메뉴 5 : 특정 인스턴스를 중지하기  */
     public static void StopInstance()
     {
         Scanner id_string = new Scanner(System.in);
@@ -196,8 +215,11 @@ public class awsTest {
         System.out.println("Succcessfully stop instance "+ request.getInstanceIds());
 
     }
+
+    /* 메뉴 6 : AMI ID를 통해 인스턴스를 생성하기  */
     public static void CreateInstance()
     {
+        //기능 추가 : 인스턴스 이름도 함께 request하기
         Scanner name_string = new Scanner(System.in);
         System.out.printf("생성할 인스턴스 이름을 입력하시오 : ");
         String new_instance_name = name_string.nextLine();
@@ -233,6 +255,8 @@ public class awsTest {
                         " based on AMI " + ami_id);
 
     }
+
+    /* 메뉴 7 : 특정 인스턴스를 재부팅하기  */
     public static void RebootInstance()
     {
         Scanner id_string = new Scanner(System.in);
@@ -247,6 +271,8 @@ public class awsTest {
         ec2.rebootInstances(request);
         System.out.println("Succcessfully rebooted instance "+ request.getInstanceIds());
     }
+
+    /* 메뉴 8 : AMI 목록 출력하기  */
     public static void IistImage()
     {
         System.out.println("Listing image....");
@@ -267,6 +293,7 @@ public class awsTest {
 
     /********************** 추가 메뉴 구현 **********************/
 
+    /* 메뉴 9 : 특정 인스턴스를 종료하기  */
     public static void TerminateInstance()
     {
         Scanner id_string = new Scanner(System.in);
@@ -282,6 +309,7 @@ public class awsTest {
         System.out.println("Succcessfully Terminated instance "+ request.getInstanceIds());
     }
 
+    /* 메뉴 10 : 특정 상태의 인스턴스 목록만 출력하기  */
     public static void SearchInstancewithStatus()
     {
         int menu = 0;
@@ -329,4 +357,61 @@ public class awsTest {
         }
     }
 
+    /* 메뉴 11,12 : 모든 인스턴스 시작/중지하기 */
+
+    /* InstanceState 상태 코드 :
+    0 : pending
+    16 : running
+    32 : shutting-down
+    48 : terminated
+    64 : stopping
+    80 : stopped
+    */
+    public static void StartAllInstance(){
+        System.out.println("Starting all instances....");
+        boolean done = false;
+        DescribeInstancesRequest describe_request = new DescribeInstancesRequest();
+        while(!done) {
+            DescribeInstancesResult response = ec2.describeInstances(describe_request);
+            for(Reservation reservation : response.getReservations()) {
+                for(Instance instance : reservation.getInstances()) {
+                    if (instance.getState().getCode() == 80) {  //인스턴스가 stopped 상태 일 때
+                        StartInstancesRequest start_Request = new StartInstancesRequest()
+                                .withInstanceIds(instance.getInstanceId());
+                        ec2.startInstances(start_Request);
+                        System.out.println("Starting instance "+ start_Request.getInstanceIds() + " . . .");
+                    }
+                }
+            }
+            describe_request.setNextToken(response.getNextToken());
+            if(response.getNextToken() == null) {
+                done = true;
+            }
+        }
+        System.out.println("Successfully start all instances :)");
+    }
+
+    public static void StopAllInstance(){
+        System.out.println("Stopping all instances....");
+        boolean done = false;
+        DescribeInstancesRequest describe_request = new DescribeInstancesRequest();
+        while(!done) {
+            DescribeInstancesResult response = ec2.describeInstances(describe_request);
+            for(Reservation reservation : response.getReservations()) {
+                for(Instance instance : reservation.getInstances()) {
+                    if (instance.getState().getCode() == 16) {  //인스턴스가 running 상태 일 때
+                        StopInstancesRequest stop_Request = new StopInstancesRequest()
+                                .withInstanceIds(instance.getInstanceId());
+                        ec2.stopInstances(stop_Request);
+                        System.out.println("Stopping instance "+ stop_Request.getInstanceIds() + " . . .");
+                    }
+                }
+            }
+            describe_request.setNextToken(response.getNextToken());
+            if(response.getNextToken() == null) {
+                done = true;
+            }
+        }
+        System.out.println("Successfully stop all instances :)");
+    }
 }

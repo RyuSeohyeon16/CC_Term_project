@@ -46,6 +46,10 @@ Course Web : https://sites.google.com/view/data-computing/lectures/2021-f-cloud-
 
 - [x] 10. terminate(remove) instance - 인스턴스 삭제
 
+- [x] 11. start all instance - 인스턴스 전체 시작
+
+- [x] 12. stop all instance - 인스턴스 전체 중지
+
 - [ ] 기능 추가 예정
 
 - [x] 99. 종료 - O
