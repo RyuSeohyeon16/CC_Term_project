@@ -13,7 +13,7 @@ forks](https://img.shields.io/github/forks/RyuSeohyeon16/CC_Term_project?style=s
 ![GitHub
 issues](https://img.shields.io/github/issues/RyuSeohyeon16/CC_Term_project?style=social)
 
-이 레포지토리는 2021 충북대학교 클라우드 컴퓨팅 강의 Term Project(학기말 프로젝트)를 관리하기 위한 목적에서 만들어졌습니다.
+이 레포지토리는 2021 충북대학교 클라우드 컴퓨팅 강의 Term Project(학기말 프로젝트)를 관리하기 위한 목적에서 만들어졌습니다. <br/>
 This repository was created for the purpose of managing the 2021 Chungbuk National University Cloud Computing Class Term Project.
 
 프로젝트는 Dynamic Virtual Resource Managment 프로그램을 완성하는 것이 목적이며 위 실습에 쓰인 Java AWS SDK v1.1 라이브러리는 수업 Course Web에서 다운로드 받을 수 있습니다 <br/>
@@ -54,7 +54,7 @@ Course Web : https://sites.google.com/view/data-computing/lectures/2021-f-cloud-
 
 - [x] 14. list key pair - 키페어 목록 출력 
 
-- [ ] 기능 추가 예정
+- [ ] 지속 추가 가능
 
 - [x] 99. 종료 - O
 
