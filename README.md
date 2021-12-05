@@ -50,6 +50,10 @@ Course Web : https://sites.google.com/view/data-computing/lectures/2021-f-cloud-
 
 - [x] 12. stop all instance - 인스턴스 전체 중지
 
+- [x] 13. list security groups - 보안 그룹 목록 출력
+
+- [x] 14. list key pair - 키페어 목록 출력 
+
 - [ ] 기능 추가 예정
 
 - [x] 99. 종료 - O
