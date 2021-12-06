@@ -42,7 +42,7 @@ Course Web : https://sites.google.com/view/data-computing/lectures/2021-f-cloud-
 
 **추가 메뉴 구현**
 
-- [x] 9. search instance with status - 핉터링을 통해 특정 상태의 인스턴스만 검색 
+- [x] 9. search instance with status - 터링을 통해 특정 상태의 인스턴스만 검색 
 
 - [x] 10. terminate(remove) instance - 인스턴스 삭제
 
