@@ -494,7 +494,7 @@ public class awsTest {
     public static void listKeyPairs()
     {
         int index=0;
-        System.out.println("Listing Security Groups....\n");
+        System.out.println("Listing Key Pairs....\n");
 
         DescribeKeyPairsResult response =
                 ec2.describeKeyPairs();
